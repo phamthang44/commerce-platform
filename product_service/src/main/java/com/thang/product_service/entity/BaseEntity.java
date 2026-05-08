@@ -1,13 +1,14 @@
 package com.thang.product_service.entity;
 
-import com.thang.product_service.utils.TsidUtils;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.Instant;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -15,7 +16,7 @@ import java.time.Instant;
 public abstract class BaseEntity {
 
     @Id
-    private Long id;
+    private UUID id;
 
     private Instant createdAt;
     private Instant updatedAt;
@@ -30,7 +31,7 @@ public abstract class BaseEntity {
         this.createdAt = now;
         this.updatedAt = now;
 
-        this.id = TsidUtils.nextId();
+        this.id = UUID.randomUUID();
     }
 
     @PreUpdate

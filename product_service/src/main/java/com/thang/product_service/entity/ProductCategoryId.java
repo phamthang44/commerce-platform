@@ -4,6 +4,8 @@ import jakarta.persistence.Embeddable;
 import lombok.*;
 
 import java.io.Serializable;
+import java.util.UUID;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -11,6 +13,6 @@ import java.io.Serializable;
 @Embeddable
 @EqualsAndHashCode
 public class ProductCategoryId implements Serializable {
-    private Long productId;
-    private Long categoryId;
+    private UUID productId;
+    private UUID categoryId;
 }

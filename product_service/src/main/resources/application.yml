@@ -1,14 +1,13 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/vtidtn2506_ecommerce_demo_db
-    username: postgres
-    password: Thang5316082005@PG2025!
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/product_db}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:postgres}
   jpa:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: false
-
     show_sql: false
     hibernate:
       ddl-auto: none

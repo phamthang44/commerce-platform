@@ -15,7 +15,7 @@ http:
         "price" : "1000.00",
         "stockQuantity" : "1",
         "status": "ACTIVE",
-        "categoryId": "1"
+        "categoryId": "PASTE-UUID-FROM-DB-HERE"
       }
   auth: inherit
 

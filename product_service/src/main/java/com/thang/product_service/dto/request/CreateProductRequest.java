@@ -8,10 +8,11 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 @Getter
 @Setter
-public class  CreateProductRequest {
+public class CreateProductRequest {
 
     @NotBlank
     private String name;
@@ -30,5 +31,5 @@ public class  CreateProductRequest {
     private String status;
 
     @NotNull
-    private Long categoryId;
+    private UUID categoryId;
 }

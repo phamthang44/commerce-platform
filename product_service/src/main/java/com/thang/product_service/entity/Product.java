@@ -12,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "products", schema = "products")
+@Table(name = "products")
 public class Product extends BaseEntity {
 
     private String name;

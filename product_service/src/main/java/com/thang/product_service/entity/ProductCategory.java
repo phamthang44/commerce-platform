@@ -13,7 +13,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "product_categories", schema = "products")
+@Table(name = "product_categories")
 public class ProductCategory {
 
     @Builder.Default
