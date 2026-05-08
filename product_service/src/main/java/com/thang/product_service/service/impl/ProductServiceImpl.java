@@ -1,6 +1,7 @@
 package com.thang.product_service.service.impl;
 
 import com.thang.product_service.dto.request.CreateProductRequest;
+import com.thang.product_service.dto.response.ProductResponse;
 import com.thang.product_service.entity.Product;
 import com.thang.product_service.entity.ProductCategory;
 import com.thang.product_service.exception.ApplicationException;
@@ -15,6 +16,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.UUID;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -27,14 +31,13 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public Product createProduct(CreateProductRequest request) {
+    public ProductResponse createProduct(CreateProductRequest request) {
         log.info("Creating product: {}", request.getName());
 
-        var existedCategory = categoryRepository.findById(request.getCategoryId());
-        if (existedCategory.isEmpty()) {
-            throw new ApplicationException("Category Not Found");
-        }
-        if (Boolean.FALSE.equals(existedCategory.get().getIsActive())) {
+        var category = categoryRepository.findById(request.getCategoryId())
+                .orElseThrow(() -> new ApplicationException("Category Not Found"));
+
+        if (Boolean.FALSE.equals(category.getIsActive())) {
             throw new ApplicationException("Category is not active");
         }
 
@@ -44,11 +47,23 @@ public class ProductServiceImpl implements ProductService {
 
         ProductCategory productCategory = ProductCategory.builder()
                 .product(savedProduct)
-                .category(existedCategory.get())
+                .category(category)
                 .build();
-
         productCategoryRepository.save(productCategory);
 
-        return savedProduct;
+        // Populate the in-memory list so the mapper can build CategoryResponse
+        // without an extra DB round-trip.
+        savedProduct.setCategories(List.of(productCategory));
+
+        return productMapper.toProductResponse(savedProduct);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ProductResponse getProductById(UUID id) {
+        log.info("Fetching product: {}", id);
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new ApplicationException("Product Not Found"));
+        return productMapper.toProductResponse(product);
     }
 }
