@@ -1,0 +1,6 @@
+interface:
+  display_name: "Commerce Platform"
+  short_description: "Repo-specific patterns and workflows for commerce-platform"
+  default_prompt: "Use the commerce-platform repo skill to follow existing architecture, testing, and workflow conventions."
+policy:
+  allow_implicit_invocation: true
