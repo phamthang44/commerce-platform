@@ -1,0 +1,15 @@
+meta {
+  name: Get Order by ID
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{orderServiceUrl}}/v1/orders/:id
+  body: none
+  auth: none
+}
+
+params:path {
+  id: {{sampleOrderId}}
+}
