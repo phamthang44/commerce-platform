@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/vtidtn2506_ecommerce_demo_db
+    username: postgres
+    password: Thang5316082005@PG2025!
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: false
+
+    show_sql: false
+    hibernate:
+      ddl-auto: none
