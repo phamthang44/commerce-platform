@@ -1,4 +1,4 @@
-package com.thang.product_service.entity;
+package com.thang.order_service.entity;
 
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
@@ -33,7 +33,6 @@ public abstract class BaseEntity {
         Instant now = Instant.now();
         this.createdAt = now;
         this.updatedAt = now;
-
         this.id = UUID.randomUUID();
     }
 

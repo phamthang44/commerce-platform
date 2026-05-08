@@ -21,8 +21,14 @@ public class Product extends BaseEntity {
 
     private String description;
 
+    // The current selling price — what the customer pays.
     @Column(name = "price", precision = 15, scale = 2)
     private BigDecimal price;
+
+    // The original price before discount, shown crossed-out in the UI ("Was ₫1,200,000").
+    // Null means the product is not on sale.
+    @Column(name = "compare_at_price", precision = 15, scale = 2)
+    private BigDecimal compareAtPrice;
 
     @Column(name = "stock_quantity")
     private int stockQuantity;
