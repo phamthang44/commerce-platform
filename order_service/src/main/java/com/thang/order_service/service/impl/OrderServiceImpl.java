@@ -1,6 +1,8 @@
 package com.thang.order_service.service.impl;
 
+import com.thang.order_service.constant.ErrorCode;
 import com.thang.order_service.dto.request.CreateOrderRequest;
+import com.thang.order_service.dto.request.UpdateOrderStatusRequest;
 import com.thang.order_service.dto.response.OrderResponse;
 import com.thang.order_service.entity.Order;
 import com.thang.order_service.entity.OrderItem;
@@ -10,6 +12,9 @@ import com.thang.order_service.repository.OrderRepository;
 import com.thang.order_service.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -64,8 +69,39 @@ public class OrderServiceImpl implements OrderService {
     @Transactional(readOnly = true)
     public OrderResponse getOrderById(UUID id) {
         log.info("Fetching order: {}", id);
+        return orderMapper.toOrderResponse(
+                orderRepository.findById(id)
+                        .orElseThrow(() -> new ApplicationException(ErrorCode.ORDER_NOT_FOUND)));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<OrderResponse> getAllOrders(int page, int size) {
+        log.info("Fetching all orders page={} size={}", page, size);
+        var pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        return orderRepository.findAll(pageable).map(orderMapper::toOrderResponse);
+    }
+
+    @Override
+    @Transactional
+    public OrderResponse updateOrderStatus(UUID id, UpdateOrderStatusRequest request) {
+        log.info("Updating order {} status to {}", id, request.getStatus());
         Order order = orderRepository.findById(id)
-                .orElseThrow(() -> new ApplicationException("Order Not Found"));
-        return orderMapper.toOrderResponse(order);
+                .orElseThrow(() -> new ApplicationException(ErrorCode.ORDER_NOT_FOUND));
+        order.setStatus(request.getStatus().toUpperCase());
+        return orderMapper.toOrderResponse(orderRepository.save(order));
+    }
+
+    @Override
+    @Transactional
+    public void cancelOrder(UUID id) {
+        log.info("Cancelling order: {}", id);
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new ApplicationException(ErrorCode.ORDER_NOT_FOUND));
+        if (!"PENDING".equals(order.getStatus())) {
+            throw new ApplicationException(ErrorCode.ORDER_CANNOT_BE_CANCELLED);
+        }
+        order.setStatus("CANCELLED");
+        orderRepository.save(order);
     }
 }
