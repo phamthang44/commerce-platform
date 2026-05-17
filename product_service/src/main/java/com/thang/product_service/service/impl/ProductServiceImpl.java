@@ -113,6 +113,21 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
+    public void deductStockBatch(List<ProductDeductRequest> requests) {
+        log.info("Batch deducting stock for {} product(s)", requests.size());
+        for (ProductDeductRequest req : requests) {
+            Product product = productRepository.findByIdWithLock(req.getProductId())
+                    .orElseThrow(() -> new ApplicationException(ErrorCode.PRODUCT_NOT_FOUND));
+            if (product.getStockQuantity() < req.getQuantity()) {
+                throw new ApplicationException(ErrorCode.INSUFFICIENT_STOCK);
+            }
+            product.setStockQuantity(product.getStockQuantity() - req.getQuantity());
+            productRepository.save(product);
+        }
+    }
+
+    @Override
+    @Transactional
     public void deleteProduct(UUID id) {
         log.info("Deleting product: {}", id);
         Product product = productRepository.findById(id)

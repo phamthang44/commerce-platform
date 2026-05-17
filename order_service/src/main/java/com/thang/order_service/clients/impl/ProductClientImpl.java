@@ -55,4 +55,16 @@ public class ProductClientImpl implements ProductClient {
             throw new ApplicationException(PRODUCT_NOT_FOUND);
         }
     }
+
+    @Override
+    public void deductStockBatch(List<ProductDeductRequest> requests) {
+        webClientBuilder.build()
+                .patch()
+                .uri("http://localhost:8888/v1/products/deduct/batch")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(requests)
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<ApiResult<?>>(){})
+                .block();
+    }
 }

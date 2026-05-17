@@ -61,6 +61,7 @@ public class OrderServiceImpl implements OrderService {
         products.forEach(p -> productMap.put(p.getId(), p));
 
         List<OrderItem> orderItems = new ArrayList<>();
+        List<ProductDeductRequest> deductRequests = new ArrayList<>();
         BigDecimal totalAmount = BigDecimal.ZERO;
 
         for (OrderItemRequest itemReq : request.getItems()) {
@@ -79,11 +80,10 @@ public class OrderServiceImpl implements OrderService {
                 throw new ApplicationException(ErrorCode.INSUFFICIENT_STOCK);
             }
 
-            productClient.deductStock(
-                    ProductDeductRequest.builder()
-                            .productId(product.getId())
-                            .quantity(itemReq.getQuantity())
-                            .build());
+            deductRequests.add(ProductDeductRequest.builder()
+                    .productId(product.getId())
+                    .quantity(itemReq.getQuantity())
+                    .build());
 
             // set data from product service into OrderItem
             BigDecimal subtotal = product.getPrice().multiply(BigDecimal.valueOf(itemReq.getQuantity()));
@@ -99,6 +99,8 @@ public class OrderServiceImpl implements OrderService {
             orderItems.add(orderItem);
             totalAmount = totalAmount.add(subtotal);
         }
+
+        productClient.deductStockBatch(deductRequests);
 
         // Step 8: attach computed items and total, then save
         order.setItems(orderItems);
