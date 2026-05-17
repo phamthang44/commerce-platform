@@ -1,0 +1,30 @@
+meta {
+  name: Update Product
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{productServiceUrl}}/v1/products/:id
+  body: json
+  auth: none
+}
+
+params:path {
+  id: {{sampleProductId}}
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "name": "Wireless Bluetooth Headphones Pro",
+    "description": "Premium noise-cancelling wireless headphones with 40-hour battery life",
+    "price": 149.99,
+    "compareAtPrice": 199.99,
+    "stockQuantity": 30,
+    "status": "ACTIVE"
+  }
+}

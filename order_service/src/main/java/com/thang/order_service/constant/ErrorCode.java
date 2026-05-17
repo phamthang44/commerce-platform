@@ -8,18 +8,24 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum ErrorCode implements BaseErrorCode {
 
-    // ── System ───────────────────────────────────────────────────────────────
-    INTERNAL_SERVER_ERROR(500, "INTERNAL_SERVER_ERROR", "An unexpected error occurred"),
+    // ── System (001-009) ─────────────────────────────────────────────────────
+    INTERNAL_SERVER_ERROR(500, "INTERNAL_SERVER_ERROR_001", "An unexpected error occurred"),
 
-    // ── Request / Validation ─────────────────────────────────────────────────
-    VALIDATION_FAILED(400, "VALIDATION_FAILED", "Request validation failed"),
-    INVALID_REQUEST(400, "INVALID_REQUEST", "Invalid request"),
-    ROUTE_NOT_FOUND(404, "ROUTE_NOT_FOUND", "The requested endpoint does not exist"),
+    // ── Request / Validation (010-019) ───────────────────────────────────────
+    VALIDATION_FAILED(400,  "VALIDATION_FAILED_010",  "Request validation failed"),
+    INVALID_REQUEST(400,    "INVALID_REQUEST_011",     "Invalid request"),
+    ROUTE_NOT_FOUND(404,    "ROUTE_NOT_FOUND_012",     "The requested endpoint does not exist"),
 
-    // ── Order business ───────────────────────────────────────────────────────
-    ORDER_NOT_FOUND(404, "ORDER_NOT_FOUND", "Order not found"),
-    ORDER_CANNOT_BE_CANCELLED(400, "ORDER_CANNOT_BE_CANCELLED", "Order cannot be cancelled in its current status"),
-    INVALID_ORDER_STATUS(400, "INVALID_ORDER_STATUS", "Invalid order status");
+    // ── Order business (100-199) ─────────────────────────────────────────────
+    ORDER_NOT_FOUND(404,            "ORDER_NOT_FOUND_100",            "Order not found"),
+    ORDER_CANNOT_BE_CANCELLED(400,  "ORDER_CANNOT_BE_CANCELLED_101",  "Order cannot be cancelled in its current status"),
+    INVALID_ORDER_STATUS(400,       "INVALID_ORDER_STATUS_102",       "Invalid order status"),
+    
+
+    // ── Product business (200-299) ───────────────────────────────────────────
+    PRODUCT_NOT_FOUND(404,     "PRODUCT_NOT_FOUND_200",     "Product not found"),
+    PRODUCT_UNAVAILABLE(400,   "PRODUCT_UNAVAILABLE_201",   "Product is not available for purchase"),
+    INSUFFICIENT_STOCK(400,    "INSUFFICIENT_STOCK_202",    "Insufficient stock for product");
 
     private final int httpStatus;
     private final String code;

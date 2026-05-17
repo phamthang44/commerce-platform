@@ -1,5 +1,6 @@
 package com.thang.order_service.entity;
 
+import com.thang.order_service.common.enums.OrderStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
@@ -16,14 +17,15 @@ import java.util.UUID;
 @AllArgsConstructor
 @Entity
 @Table(name = "orders")
-public class Order extends BaseEntity {
+public class Order extends AuditableEntity {
 
     @Column(name = "customer_id")
     @JdbcTypeCode(Types.VARCHAR)
     private UUID customerId;
 
     @Column(length = 20)
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status;
 
     @Column(name = "total_amount", precision = 15, scale = 2)
     private BigDecimal totalAmount;

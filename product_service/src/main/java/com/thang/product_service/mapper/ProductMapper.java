@@ -1,7 +1,9 @@
 package com.thang.product_service.mapper;
 
 import com.thang.product_service.dto.request.CreateProductRequest;
+import com.thang.product_service.dto.response.CategoryDTO;
 import com.thang.product_service.dto.response.CategoryResponse;
+import com.thang.product_service.dto.response.ProductDTO;
 import com.thang.product_service.dto.response.ProductResponse;
 import com.thang.product_service.entity.Product;
 import com.thang.product_service.entity.ProductCategory;
@@ -15,10 +17,15 @@ public interface ProductMapper {
 
     ProductResponse toProductResponse(Product product);
 
-    // Unwraps the join-table row so MapStruct can build List<CategoryResponse>
-    // from List<ProductCategory> automatically when mapping Product.categories.
+    ProductDTO toProductDTO(Product product);
+
     @Mapping(target = "id",   source = "category.id")
     @Mapping(target = "name", source = "category.name")
     @Mapping(target = "slug", source = "category.slug")
     CategoryResponse toCategoryResponse(ProductCategory productCategory);
+
+    @Mapping(target = "id",   source = "category.id")
+    @Mapping(target = "name", source = "category.name")
+    @Mapping(target = "slug", source = "category.slug")
+    CategoryDTO toCategoryDTO(ProductCategory productCategory);
 }

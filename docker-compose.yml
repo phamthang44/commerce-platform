@@ -66,6 +66,57 @@ services:
   #   networks:
   #     - ecommerce-network
 
+  # ─────────────────────────────────────────────
+  # Zookeeper — required by Confluent Kafka
+  # ─────────────────────────────────────────────
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.4.4
+    container_name: ecommerce-zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - ecommerce-network
+
+  # ─────────────────────────────────────────────
+  # Kafka — Confluent image
+  # Accessible inside Docker network at: kafka:9092
+  # Accessible from your host machine at: localhost:29092
+  # ─────────────────────────────────────────────
+  kafka:
+    image: confluentinc/cp-kafka:7.4.4
+    container_name: ecommerce-kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - "29092:29092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+    networks:
+      - ecommerce-network
+
+  # ─────────────────────────────────────────────
+  # Kafka UI — visual dashboard
+  # Open http://localhost:8989 in your browser
+  # ─────────────────────────────────────────────
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: ecommerce-kafka-ui
+    ports:
+      - "8989:8080"
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
+    depends_on:
+      - kafka
+    networks:
+      - ecommerce-network
+
 volumes:
   postgres_data:
 

@@ -1,0 +1,25 @@
+meta {
+  name: Update Order Status
+  type: http
+  seq: 4
+}
+
+patch {
+  url: {{orderServiceUrl}}/v1/orders/:id/status
+  body: json
+  auth: none
+}
+
+params:path {
+  id: {{sampleOrderId}}
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "status": "CONFIRMED"
+  }
+}

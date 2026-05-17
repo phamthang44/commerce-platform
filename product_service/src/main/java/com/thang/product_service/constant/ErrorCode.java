@@ -8,21 +8,22 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum ErrorCode implements BaseErrorCode {
 
-    // ── System ───────────────────────────────────────────────────────────────
-    INTERNAL_SERVER_ERROR(500, "INTERNAL_SERVER_ERROR", "An unexpected error occurred"),
+    // ── System (001-009) ─────────────────────────────────────────────────────
+    INTERNAL_SERVER_ERROR(500, "INTERNAL_SERVER_ERROR_001", "An unexpected error occurred"),
 
-    // ── Request / Validation ─────────────────────────────────────────────────
-    VALIDATION_FAILED(400, "VALIDATION_FAILED", "Request validation failed"),
-    INVALID_REQUEST(400, "INVALID_REQUEST", "Invalid request"),
-    ROUTE_NOT_FOUND(404, "ROUTE_NOT_FOUND", "The requested endpoint does not exist"),
+    // ── Request / Validation (010-019) ───────────────────────────────────────
+    VALIDATION_FAILED(400,  "VALIDATION_FAILED_010",  "Request validation failed"),
+    INVALID_REQUEST(400,    "INVALID_REQUEST_011",     "Invalid request"),
+    ROUTE_NOT_FOUND(404,    "ROUTE_NOT_FOUND_012",     "The requested endpoint does not exist"),
 
-    // ── Product business ─────────────────────────────────────────────────────
-    PRODUCT_NOT_FOUND(404, "PRODUCT_NOT_FOUND", "Product not found"),
+    // ── Product business (200-299) ───────────────────────────────────────────
+    PRODUCT_NOT_FOUND(404,    "PRODUCT_NOT_FOUND_200",    "Product not found"),
+    INSUFFICIENT_STOCK(400,   "INSUFFICIENT_STOCK_201",   "Insufficient stock for the requested quantity"),
 
-    // ── Category business ────────────────────────────────────────────────────
-    CATEGORY_NOT_FOUND(404, "CATEGORY_NOT_FOUND", "Category not found"),
-    CATEGORY_INACTIVE(400, "CATEGORY_INACTIVE", "Category is not active"),
-    CATEGORY_HAS_PRODUCTS(400, "CATEGORY_HAS_PRODUCTS", "Category has associated products and cannot be deleted");
+    // ── Category business (300-399) ──────────────────────────────────────────
+    CATEGORY_NOT_FOUND(404,      "CATEGORY_NOT_FOUND_300",      "Category not found"),
+    CATEGORY_INACTIVE(400,       "CATEGORY_INACTIVE_301",       "Category is not active"),
+    CATEGORY_HAS_PRODUCTS(400,   "CATEGORY_HAS_PRODUCTS_302",   "Category has associated products and cannot be deleted");
 
     private final int httpStatus;
     private final String code;

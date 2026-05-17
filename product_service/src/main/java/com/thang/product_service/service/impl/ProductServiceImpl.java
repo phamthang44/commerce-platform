@@ -2,14 +2,16 @@ package com.thang.product_service.service.impl;
 
 import com.thang.product_service.constant.ErrorCode;
 import com.thang.product_service.dto.request.CreateProductRequest;
+import com.thang.product_service.dto.request.ProductDeductRequest;
+import com.thang.product_service.dto.request.ProductFilter;
 import com.thang.product_service.dto.request.UpdateProductRequest;
+import com.thang.product_service.dto.response.ProductDTO;
 import com.thang.product_service.dto.response.ProductResponse;
 import com.thang.product_service.entity.Product;
 import com.thang.product_service.entity.ProductCategory;
 import com.thang.product_service.exception.ApplicationException;
 import com.thang.product_service.mapper.ProductMapper;
 import com.thang.product_service.repository.CategoryRepository;
-import com.thang.product_service.repository.ProductCategoryRepository;
 import com.thang.product_service.repository.ProductRepository;
 import com.thang.product_service.service.ProductService;
 import com.thang.product_service.utils.SlugUtils;
@@ -31,7 +33,6 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
-    private final ProductCategoryRepository productCategoryRepository;
     private final ProductMapper productMapper;
 
     @Override
@@ -48,17 +49,14 @@ public class ProductServiceImpl implements ProductService {
 
         Product product = productMapper.toProductEntity(request);
         product.setSlug(SlugUtils.toSlug(product.getName()));
-        Product savedProduct = productRepository.save(product);
 
         ProductCategory productCategory = ProductCategory.builder()
-                .product(savedProduct)
+                .product(product)
                 .category(category)
                 .build();
-        productCategoryRepository.save(productCategory);
+        product.setCategories(List.of(productCategory));
 
-        savedProduct.setCategories(List.of(productCategory));
-
-        return productMapper.toProductResponse(savedProduct);
+        return productMapper.toProductResponse(productRepository.save(product));
     }
 
     @Override
@@ -98,10 +96,36 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
+    public ProductDTO deductStock(UUID id, ProductDeductRequest request) {
+        log.info("Deducting {} unit(s) from product: {}", request.getQuantity(), id);
+
+        Product product = productRepository.findByIdWithLock(id)
+                .orElseThrow(() -> new ApplicationException(ErrorCode.PRODUCT_NOT_FOUND));
+
+        if (product.getStockQuantity() < request.getQuantity()) {
+            throw new ApplicationException(ErrorCode.INSUFFICIENT_STOCK);
+        }
+
+        product.setStockQuantity(product.getStockQuantity() - request.getQuantity());
+
+        return productMapper.toProductDTO(productRepository.save(product));
+    }
+
+    @Override
+    @Transactional
     public void deleteProduct(UUID id) {
         log.info("Deleting product: {}", id);
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ApplicationException(ErrorCode.PRODUCT_NOT_FOUND));
         productRepository.delete(product);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ProductDTO> getProductsByIds(ProductFilter productFilter) {
+        return productRepository.findByIdIn(productFilter.getProductIds())
+                .stream()
+                .map(productMapper::toProductDTO)
+                .toList();
     }
 }

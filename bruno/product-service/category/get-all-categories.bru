@@ -1,0 +1,16 @@
+meta {
+  name: Get All Categories
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{productServiceUrl}}/v1/categories
+  body: none
+  auth: none
+}
+
+params:query {
+  page: 0
+  size: 10
+}

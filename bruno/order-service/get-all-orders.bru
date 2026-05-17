@@ -1,0 +1,16 @@
+meta {
+  name: Get All Orders
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{orderServiceUrl}}/v1/orders
+  body: none
+  auth: none
+}
+
+params:query {
+  page: 0
+  size: 10
+}

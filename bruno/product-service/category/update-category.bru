@@ -1,0 +1,27 @@
+meta {
+  name: Update Category
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{productServiceUrl}}/v1/categories/:id
+  body: json
+  auth: none
+}
+
+params:path {
+  id: {{sampleCategoryId}}
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "name": "Consumer Electronics",
+    "isActive": true,
+    "parentId": null
+  }
+}
