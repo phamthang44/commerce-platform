@@ -74,6 +74,13 @@ public class ProductController {
                 ApiResult.success(productService.deductStock(id, request), "Product updated successfully"));
     }
 
+    @PatchMapping("/deduct/batch")
+    public ResponseEntity<ApiResult<?>> deductStockBatch(@RequestBody List<ProductDeductRequest> requests) {
+        log.info("PATCH {}/deduct/batch count={}", ApiRoutes.PRODUCTS, requests.size());
+        productService.deductStockBatch(requests);
+        return ResponseEntity.ok(ApiResult.success("Stock deducted successfully"));
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResult<?>> deleteProduct(@PathVariable UUID id) {
         log.info("DELETE {}/{}", ApiRoutes.PRODUCTS, id);

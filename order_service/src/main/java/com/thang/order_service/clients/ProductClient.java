@@ -11,4 +11,6 @@ public interface ProductClient {
     List<ProductDTO> getProductsByIds(ProductFilter productFilter);
 
     void deductStock(ProductDeductRequest productDeductRequest);
+
+    void deductStockBatch(List<ProductDeductRequest> requests);
 }

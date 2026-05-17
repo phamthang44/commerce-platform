@@ -18,6 +18,7 @@ public interface ProductService {
     Page<ProductResponse> getAllProducts(int page, int size);
     ProductResponse updateProduct(UUID id, UpdateProductRequest request);
     ProductDTO deductStock(UUID id, ProductDeductRequest request);
+    void deductStockBatch(List<ProductDeductRequest> requests);
     void deleteProduct(UUID id);
     List<ProductDTO> getProductsByIds(ProductFilter productFilter);
 }
